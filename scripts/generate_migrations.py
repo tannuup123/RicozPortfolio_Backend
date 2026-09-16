@@ -36,7 +36,7 @@ def main():
 
     print("Generating Group 5...")
     set_init_content([
-        "mixins", "organization", "role", "user", "strategic_goal", "idea", 
+        "mixins", "organization", "role", "user", "strategic_goal", "idea",
         "business_case", "approval", "portfolio", "project", "project_member",
         "task", "milestone", "risk", "budget", "expense"
     ])

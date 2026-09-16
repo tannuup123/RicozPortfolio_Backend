@@ -1,8 +1,9 @@
+
+from sqlalchemy import Boolean, Column, ForeignKey, String, Table
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import String, Boolean, ForeignKey, Table, Column
+
 from app.db.base import Base
-from app.models.mixins import UUIDMixin, TimestampMixin, TenantMixin
-import uuid
+from app.models.mixins import TenantMixin, TimestampMixin, UUIDMixin
 
 user_roles = Table(
     "user_roles",
@@ -17,5 +18,5 @@ class User(Base, UUIDMixin, TenantMixin, TimestampMixin):
     hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
-    
+
     roles = relationship("Role", secondary=user_roles)

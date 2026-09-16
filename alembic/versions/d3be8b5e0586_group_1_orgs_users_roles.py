@@ -1,15 +1,15 @@
 """Group 1: Orgs, Users, Roles
 
 Revision ID: d3be8b5e0586
-Revises: 
+Revises:
 Create Date: 2026-09-16 15:50:17.500576
 """
 
 from typing import Sequence, Union
 
 import sqlalchemy as sa
-from alembic import op
 
+from alembic import op
 
 # revision identifiers, used by Alembic.
 revision: str = 'd3be8b5e0586'

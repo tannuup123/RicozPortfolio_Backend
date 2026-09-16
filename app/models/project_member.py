@@ -1,8 +1,11 @@
+import uuid
+
+from sqlalchemy import ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import String, ForeignKey
+
 from app.db.base import Base
 from app.models.mixins import TimestampMixin
-import uuid
+
 
 class ProjectMember(Base, TimestampMixin):
     __tablename__ = "project_members"

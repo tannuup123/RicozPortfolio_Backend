@@ -1,9 +1,12 @@
-from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import String, Numeric, Date, ForeignKey
-from app.db.base import Base
-from app.models.mixins import UUIDMixin, TimestampMixin
-from datetime import date
 import uuid
+from datetime import date
+
+from sqlalchemy import Date, ForeignKey, Numeric, String
+from sqlalchemy.orm import Mapped, mapped_column
+
+from app.db.base import Base
+from app.models.mixins import TimestampMixin, UUIDMixin
+
 
 class Expense(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "expenses"

@@ -1,5 +1,5 @@
 import os
-import time
+
 
 def write_file(path, content):
     os.makedirs(os.path.dirname(path), exist_ok=True)
@@ -54,7 +54,7 @@ class User(Base, UUIDMixin, TenantMixin, TimestampMixin):
     hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
-    
+
     roles = relationship("Role", secondary=user_roles)
 """
 
@@ -98,7 +98,7 @@ class Idea(Base, UUIDMixin, TenantMixin, SoftDeleteMixin, TimestampMixin):
     title: Mapped[str] = mapped_column(String(255), nullable=False)
     description: Mapped[str] = mapped_column(Text, nullable=False)
     status: Mapped[IdeaStatus] = mapped_column(SQLEnum(IdeaStatus, native_enum=True), default=IdeaStatus.draft, nullable=False)
-    
+
     strategic_goal_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("strategic_goals.id", ondelete="SET NULL"), nullable=True)
     author_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
 """
@@ -166,7 +166,7 @@ class Project(Base, UUIDMixin, TenantMixin, SoftDeleteMixin, TimestampMixin):
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
     status: Mapped[ProjectStatus] = mapped_column(SQLEnum(ProjectStatus, native_enum=True), default=ProjectStatus.planned, nullable=False)
-    
+
     portfolio_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("portfolios.id", ondelete="SET NULL"), nullable=True)
     source_idea_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("ideas.id", ondelete="SET NULL"), unique=True, nullable=True)
 """

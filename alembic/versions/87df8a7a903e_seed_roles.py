@@ -5,14 +5,13 @@ Revises: 1aac2fc70d0a
 Create Date: 2026-09-16 16:18:05.876036
 """
 
+import uuid
+from datetime import datetime, timezone
 from typing import Sequence, Union
 
 import sqlalchemy as sa
+
 from alembic import op
-
-
-import uuid
-from datetime import datetime, timezone
 
 # revision identifiers, used by Alembic.
 revision: str = '87df8a7a903e'
@@ -30,9 +29,9 @@ def upgrade() -> None:
         sa.column('created_at', sa.DateTime),
         sa.column('updated_at', sa.DateTime)
     )
-    
+
     now = datetime.now(timezone.utc)
-    
+
     op.bulk_insert(
         roles_table,
         [

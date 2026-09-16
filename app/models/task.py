@@ -1,9 +1,13 @@
-from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import String, Text, ForeignKey, Enum as SQLEnum
-from app.db.base import Base
-from app.models.mixins import UUIDMixin, TimestampMixin
 import enum
 import uuid
+
+from sqlalchemy import Enum as SQLEnum
+from sqlalchemy import ForeignKey, String, Text
+from sqlalchemy.orm import Mapped, mapped_column
+
+from app.db.base import Base
+from app.models.mixins import TimestampMixin, UUIDMixin
+
 
 class TaskStatus(str, enum.Enum):
     todo = "todo"

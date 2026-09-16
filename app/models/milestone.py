@@ -1,10 +1,14 @@
-from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import String, Text, Date, ForeignKey, Enum as SQLEnum
-from app.db.base import Base
-from app.models.mixins import UUIDMixin, TimestampMixin
-from datetime import date
 import enum
 import uuid
+from datetime import date
+
+from sqlalchemy import Date, ForeignKey, String, Text
+from sqlalchemy import Enum as SQLEnum
+from sqlalchemy.orm import Mapped, mapped_column
+
+from app.db.base import Base
+from app.models.mixins import TimestampMixin, UUIDMixin
+
 
 class MilestoneStatus(str, enum.Enum):
     pending = "pending"

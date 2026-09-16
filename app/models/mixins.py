@@ -1,7 +1,9 @@
 import uuid
 from datetime import datetime, timezone
-from sqlalchemy.orm import mapped_column, Mapped
-from sqlalchemy import DateTime, Uuid, ForeignKey
+
+from sqlalchemy import DateTime, ForeignKey, Uuid
+from sqlalchemy.orm import Mapped, mapped_column
+
 
 class UUIDMixin:
     id: Mapped[uuid.UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4)

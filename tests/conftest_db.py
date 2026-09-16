@@ -1,16 +1,14 @@
 import pytest
 import sqlalchemy as sa
+from alembic.config import Config
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from app.db.base import Base
+from alembic import command
+from app.core.config import settings
 
 # We connect to localhost:5432 because we are running tests locally against the Docker DB
 TEST_DATABASE_URL = "postgresql+psycopg://postgres:postgres@localhost:5432/ricozportfolio_test"
-
-from alembic.config import Config
-from alembic import command
-from app.core.config import settings
 
 @pytest.fixture(scope="session")
 def db_engine():

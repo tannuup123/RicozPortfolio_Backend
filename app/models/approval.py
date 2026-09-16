@@ -1,9 +1,13 @@
-from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import Text, ForeignKey, Enum as SQLEnum
-from app.db.base import Base
-from app.models.mixins import UUIDMixin, TimestampMixin
 import enum
 import uuid
+
+from sqlalchemy import Enum as SQLEnum
+from sqlalchemy import ForeignKey, Text
+from sqlalchemy.orm import Mapped, mapped_column
+
+from app.db.base import Base
+from app.models.mixins import TimestampMixin, UUIDMixin
+
 
 class ApprovalStatus(str, enum.Enum):
     approved = "approved"
