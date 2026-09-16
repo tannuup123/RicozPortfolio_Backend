@@ -48,9 +48,7 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    roles_table = sa.table('roles', sa.column('name', sa.String))
-    op.execute(
-        roles_table.delete().where(
-            roles_table.c.name.in_(ROLES)
-        )
-    )
+    # Rows are automatically removed when Group 1's downgrade drops the roles
+    # table. Attempting to DELETE here is unsafe because the table may already
+    # be absent (e.g. when downgrading from base on a fresh test database).
+    pass
