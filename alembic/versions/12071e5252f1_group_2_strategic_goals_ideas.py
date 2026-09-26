@@ -57,4 +57,7 @@ def downgrade() -> None:
     op.drop_table('ideas')
     op.drop_index(op.f('ix_strategic_goals_organization_id'), table_name='strategic_goals')
     op.drop_table('strategic_goals')
+    # Drop Postgres ENUM types created in upgrade()
+    op.execute("DROP TYPE IF EXISTS ideastatus")
     # ### end Alembic commands ###
+
