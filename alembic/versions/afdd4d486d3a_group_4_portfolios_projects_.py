@@ -51,14 +51,16 @@ def upgrade() -> None:
     )
     op.create_index(op.f('ix_projects_organization_id'), 'projects', ['organization_id'], unique=False)
     op.create_table('project_members',
+    sa.Column('id', sa.Uuid(), nullable=False),
     sa.Column('project_id', sa.Uuid(), nullable=False),
     sa.Column('user_id', sa.Uuid(), nullable=False),
-    sa.Column('role', sa.String(length=50), nullable=False),
+    sa.Column('project_role', sa.Enum('manager', 'member', name='projectmemberrole'), nullable=False),
     sa.Column('created_at', sa.DateTime(timezone=True), nullable=False),
     sa.Column('updated_at', sa.DateTime(timezone=True), nullable=False),
     sa.ForeignKeyConstraint(['project_id'], ['projects.id'], ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
-    sa.PrimaryKeyConstraint('project_id', 'user_id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('project_id', 'user_id', name='uq_project_members_project_user')
     )
     # ### end Alembic commands ###
 
@@ -70,4 +72,8 @@ def downgrade() -> None:
     op.drop_table('projects')
     op.drop_index(op.f('ix_portfolios_organization_id'), table_name='portfolios')
     op.drop_table('portfolios')
+    # Drop Postgres ENUM types created in upgrade()
+    op.execute("DROP TYPE IF EXISTS projectmemberrole")
+    op.execute("DROP TYPE IF EXISTS projectstatus")
     # ### end Alembic commands ###
+

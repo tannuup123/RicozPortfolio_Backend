@@ -91,4 +91,12 @@ def downgrade() -> None:
     op.drop_table('project_budgets')
     op.drop_table('milestones')
     op.drop_table('expenses')
+    # Drop Postgres ENUM types created in upgrade()
+    op.execute("DROP TYPE IF EXISTS taskstatus")
+    op.execute("DROP TYPE IF EXISTS taskpriority")
+    op.execute("DROP TYPE IF EXISTS riskstatus")
+    op.execute("DROP TYPE IF EXISTS risk_impact_enum")
+    op.execute("DROP TYPE IF EXISTS risk_probability_enum")
+    op.execute("DROP TYPE IF EXISTS milestonestatus")
     # ### end Alembic commands ###
+
