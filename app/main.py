@@ -6,6 +6,7 @@ Phase 1: CORS middleware + GET /health only. No business logic.
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.api.v1.auth import router as auth_router
 from app.core.config import settings
 
 app = FastAPI(
@@ -24,8 +25,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(auth_router, prefix="/api/v1/auth", tags=["auth"])
+
 
 @app.get("/health")
 def health_check() -> dict:
     """Liveness probe — returns 200 with status ok."""
     return {"status": "ok"}
+
