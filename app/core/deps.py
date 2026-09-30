@@ -51,3 +51,30 @@ def get_current_user(
         )
 
     return user
+
+
+def require_role(*allowed_roles: str):
+    """FastAPI dependency factory enforcing Role-Based Access Control (RBAC).
+
+    Requires authentication via get_current_user.
+    - If the user possesses the 'org_admin' role, access is always permitted
+      (per mvp-requirements 2.4: org_admin can perform all organizational actions).
+    - Otherwise, the user must hold at least one role specified in allowed_roles.
+    - If neither condition is met, raises HTTPException 403 Forbidden.
+    """
+
+    def _role_checker(current_user: User = Depends(get_current_user)) -> User:
+        user_role_names = {r.name for r in current_user.roles}
+        if "org_admin" in user_role_names:
+            return current_user
+
+        if any(role in user_role_names for role in allowed_roles):
+            return current_user
+
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Forbidden: Insufficient permissions",
+        )
+
+    return _role_checker
+
