@@ -7,6 +7,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.v1.auth import router as auth_router
+from app.api.v1.ideas import router as ideas_router
+from app.api.v1.strategic_goals import router as strategic_goals_router
 from app.api.v1.users import router as users_router
 from app.core.config import settings
 
@@ -27,6 +29,8 @@ app.add_middleware(
 )
 
 app.include_router(auth_router, prefix="/api/v1/auth", tags=["auth"])
+app.include_router(ideas_router, prefix="/api/v1/ideas", tags=["ideas"])
+app.include_router(strategic_goals_router, prefix="/api/v1/strategic-goals", tags=["strategic-goals"])
 app.include_router(users_router, prefix="/api/v1/users", tags=["users"])
 
 
