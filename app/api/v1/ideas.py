@@ -14,6 +14,7 @@ from app.schemas.idea import (
     IdeaResponse,
     IdeaUpdateRequest,
 )
+from app.schemas.project import ProjectConvertRequest, ProjectResponse
 from app.services.idea_service import idea_service
 
 router = APIRouter()
@@ -90,3 +91,20 @@ def delete_idea(
 ) -> None:
     """Soft delete an idea (portfolio_manager or org_admin only)."""
     idea_service.delete_idea(db=db, caller=current_user, idea_id=idea_id)
+
+
+@router.post("/{idea_id}/convert", response_model=ProjectResponse, status_code=status.HTTP_201_CREATED)
+def convert_idea_to_project(
+    idea_id: uuid.UUID,
+    payload: ProjectConvertRequest,
+    current_user: User = Depends(require_role("portfolio_manager")),
+    db: Session = Depends(get_db),
+) -> ProjectResponse:
+    """Convert an approved idea into a planned Project.
+
+    Only portfolio_manager or org_admin can convert.
+    """
+    project = idea_service.convert_to_project(
+        db=db, caller=current_user, idea_id=idea_id, payload=payload
+    )
+    return ProjectResponse.model_validate(project)
