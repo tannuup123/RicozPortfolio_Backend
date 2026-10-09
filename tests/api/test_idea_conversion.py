@@ -374,3 +374,29 @@ def test_convert_project_organization_id_matches_caller_org(client, db_session):
     )
     assert response.status_code == 201
     assert response.json()["organization_id"] == str(org.id)
+
+
+def test_convert_approved_idea_with_soft_deleted_portfolio_returns_404(client, db_session):
+    """CV-18: Converting an approved idea targeting a soft-deleted portfolio returns 404."""
+    from datetime import datetime, timezone
+
+    org = create_org(db_session)
+    pm, token = make_user_in_org(db_session, org.id, ["portfolio_manager"])
+    idea = create_idea_in_org(db_session, org.id, pm.id, status=IdeaStatus.approved)
+
+    portfolio = Portfolio(
+        organization_id=org.id,
+        name="Soft Deleted Portfolio",
+        deleted_at=datetime.now(timezone.utc),
+    )
+    db_session.add(portfolio)
+    db_session.commit()
+    db_session.refresh(portfolio)
+
+    response = client.post(
+        f"/api/v1/ideas/{idea.id}/convert",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"portfolio_id": str(portfolio.id)},
+    )
+    assert response.status_code == 404
+    assert "Portfolio not found in your organization." in response.json()["detail"]
