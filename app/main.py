@@ -10,6 +10,8 @@ from app.api.v1.approvals import router as approvals_router
 from app.api.v1.auth import router as auth_router
 from app.api.v1.business_cases import router as business_cases_router
 from app.api.v1.ideas import router as ideas_router
+from app.api.v1.portfolios import router as portfolios_router
+from app.api.v1.projects import router as projects_router
 from app.api.v1.strategic_goals import router as strategic_goals_router
 from app.api.v1.users import router as users_router
 from app.core.config import settings
@@ -44,6 +46,8 @@ app.include_router(
 )
 app.include_router(strategic_goals_router, prefix="/api/v1/strategic-goals", tags=["strategic-goals"])
 app.include_router(users_router, prefix="/api/v1/users", tags=["users"])
+app.include_router(portfolios_router, prefix="/api/v1/portfolios", tags=["portfolios"])
+app.include_router(projects_router, prefix="/api/v1/projects", tags=["projects"])
 
 
 
