@@ -1,6 +1,5 @@
-"""Business logic for Idea management."""
-
 import uuid
+from typing import Any
 
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
@@ -195,6 +194,80 @@ class IdeaService:
         try:
             idea_repository.soft_delete(db, idea=idea)
             db.commit()
+        except Exception:
+            db.rollback()
+            raise
+
+    @staticmethod
+    def convert_to_project(
+        db: Session,
+        caller: User,
+        idea_id: uuid.UUID,
+        payload: Any,
+    ) -> Any:
+        """Convert an approved idea into a planned Project.
+
+        Preconditions:
+        - Idea must exist within caller's organization.
+        - Idea status must be 'approved' (400 if not).
+        - Idea must not have been previously converted (409 on duplicate).
+        - If portfolio_id provided, must exist in caller's organization (404 if not).
+        """
+        from sqlalchemy.exc import IntegrityError
+
+        from app.repositories.portfolio_repository import portfolio_repository
+        from app.repositories.project_repository import project_repository
+
+        idea = idea_repository.get_by_id_within_org(
+            db, idea_id=idea_id, organization_id=caller.organization_id
+        )
+        if not idea:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Idea not found.",
+            )
+
+        if idea.status != IdeaStatus.approved:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Idea must be approved before conversion.",
+            )
+
+        existing_project = project_repository.get_by_source_idea_id(db, idea_id=idea_id)
+        if existing_project:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="This idea has already been converted to a project.",
+            )
+
+        if payload.portfolio_id is not None:
+            portfolio = portfolio_repository.get_by_id_within_org(
+                db, portfolio_id=payload.portfolio_id, organization_id=caller.organization_id
+            )
+            if not portfolio:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Portfolio not found in your organization.",
+                )
+
+        try:
+            project = project_repository.create_from_idea(
+                db=db,
+                organization_id=caller.organization_id,
+                name=idea.title,
+                description=idea.description,
+                portfolio_id=payload.portfolio_id,
+                source_idea_id=idea.id,
+            )
+            db.commit()
+            db.refresh(project)
+            return project
+        except IntegrityError:
+            db.rollback()
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="This idea has already been converted to a project.",
+            )
         except Exception:
             db.rollback()
             raise
