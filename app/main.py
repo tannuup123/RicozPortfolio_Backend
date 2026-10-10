@@ -8,7 +8,9 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.v1.approvals import router as approvals_router
 from app.api.v1.auth import router as auth_router
+from app.api.v1.budget import project_budget_router
 from app.api.v1.business_cases import router as business_cases_router
+from app.api.v1.expenses import project_expenses_router
 from app.api.v1.ideas import router as ideas_router
 from app.api.v1.milestones import (
     milestones_router,
@@ -16,6 +18,10 @@ from app.api.v1.milestones import (
 )
 from app.api.v1.portfolios import router as portfolios_router
 from app.api.v1.projects import router as projects_router
+from app.api.v1.risks import (
+    project_risks_router,
+    risks_router,
+)
 from app.api.v1.strategic_goals import router as strategic_goals_router
 from app.api.v1.tasks import (
     project_tasks_router,
@@ -75,6 +81,26 @@ app.include_router(
     milestones_router,
     prefix="/api/v1/milestones",
     tags=["milestones"],
+)
+app.include_router(
+    project_budget_router,
+    prefix="/api/v1/projects/{project_id}/budget",
+    tags=["budgets"],
+)
+app.include_router(
+    project_expenses_router,
+    prefix="/api/v1/projects/{project_id}/expenses",
+    tags=["expenses"],
+)
+app.include_router(
+    project_risks_router,
+    prefix="/api/v1/projects/{project_id}/risks",
+    tags=["risks"],
+)
+app.include_router(
+    risks_router,
+    prefix="/api/v1/risks",
+    tags=["risks"],
 )
 
 
