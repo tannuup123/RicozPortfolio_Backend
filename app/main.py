@@ -10,6 +10,10 @@ from app.api.v1.approvals import router as approvals_router
 from app.api.v1.auth import router as auth_router
 from app.api.v1.budget import project_budget_router
 from app.api.v1.business_cases import router as business_cases_router
+from app.api.v1.dashboards import (
+    portfolio_dashboard_router,
+    project_dashboard_router,
+)
 from app.api.v1.expenses import project_expenses_router
 from app.api.v1.ideas import router as ideas_router
 from app.api.v1.milestones import (
@@ -102,8 +106,16 @@ app.include_router(
     prefix="/api/v1/risks",
     tags=["risks"],
 )
-
-
+app.include_router(
+    project_dashboard_router,
+    prefix="/api/v1/projects/{project_id}/dashboard",
+    tags=["dashboards"],
+)
+app.include_router(
+    portfolio_dashboard_router,
+    prefix="/api/v1/portfolios/{portfolio_id}/dashboard",
+    tags=["dashboards"],
+)
 
 @app.get("/health")
 def health_check() -> dict:
