@@ -42,9 +42,11 @@ app = FastAPI(
 )
 
 # CORS — architecture.md §6: explicit origins, credentials required for cookie flow.
+_allowed_origins = {settings.FRONTEND_ORIGIN, "http://localhost:5173", "http://localhost:3000"}
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.FRONTEND_ORIGIN, "http://localhost:5173"],
+    allow_origins=list(_allowed_origins),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
