@@ -42,11 +42,19 @@ app = FastAPI(
 )
 
 # CORS — architecture.md §6: explicit origins, credentials required for cookie flow.
-_allowed_origins = {settings.FRONTEND_ORIGIN, "http://localhost:5173", "http://localhost:3000"}
+_configured_origins = [o.strip() for o in settings.FRONTEND_ORIGIN.split(",") if o.strip()]
+_allowed_origins = {
+    *_configured_origins,
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "https://ricoz-portfolio-frontend.vercel.app",
+    "https://ricoz-portfolio-frontend-git-f-bc85ac-tanmay-upadhyays-projects.vercel.app",
+}
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=list(_allowed_origins),
+    allow_origin_regex=r"^https://ricoz-portfolio-frontend(-[a-zA-Z0-9-]+)?-tanmay-upadhyays-projects\.vercel\.app$",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
